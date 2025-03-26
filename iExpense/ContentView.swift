@@ -4,8 +4,8 @@
 //
 //  Created by Seah Park on 3/21/25.
 //
+// 돈 저장 고치기
 
-import Observation
 import SwiftUI
 
 struct ExpenseItem: Identifiable, Codable {
@@ -27,8 +27,8 @@ class Expenses {
     
     init() {
         if let savedItems = UserDefaults.standard.data(forKey: "Items") {
-            if let decoded = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems) {
-                items = decoded
+            if let decodedItems = try? JSONDecoder().decode([ExpenseItem].self, from: savedItems) {
+                items = decodedItems
                 return // exit initializer
             }
         }
