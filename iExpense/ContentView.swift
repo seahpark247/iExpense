@@ -36,6 +36,42 @@ class Expenses {
     }
 }
 
+struct valueWarning: ViewModifier {
+    var value: Double
+    
+    func body(content: Content) -> some View {
+        content.foregroundColor(value < 10 ? .blue : value < 100 ? .green : .red)
+    }
+}
+
+struct itemsList: View {
+    let expenses: Expenses
+    let removeItems: (IndexSet) -> Void
+    let type: String
+    
+    var body: some View {
+        ForEach(expenses.items.filter {$0.type == type}) { item in
+            HStack{
+                VStack(alignment: .leading) {
+                    Text(item.name).font(.headline)
+                }
+                
+                Spacer()
+                
+                Text(item.amount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                    .ValueWarningStyle(item.amount)
+            }
+        }
+        .onDelete(perform: removeItems)
+    }
+}
+
+extension View {
+    func ValueWarningStyle(_ value: Double) -> some View {
+        modifier(iExpense.valueWarning(value: value))
+    }
+}
+
 struct ContentView: View {
     @State private var expenses = Expenses()
     
@@ -44,20 +80,14 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(expenses.items) { item in
-                    HStack{
-                        VStack(alignment: .leading) {
-                            Text(item.name).font(.headline)
-                            
-                            Text(item.type)
-                        }
-                        
-                        Spacer()
-                        
-                        Text(item.amount, format: .currency(code: "USD"))
-                    }
+                Section("Business") {
+                    itemsList(expenses: expenses, removeItems: removeItems, type: "Business")
                 }
-                .onDelete(perform: removeItems)
+                
+                Section("Personal: Limit $100") {
+                    itemsList(expenses: expenses, removeItems: removeItems, type: "Personal")
+                } // 총 합 리밋 따라서 배경색 바뀌기
+                .listRowBackground(Color.pink.opacity(0.1))
             }
             .navigationTitle("iExpense")
             .toolbar {
@@ -74,6 +104,7 @@ struct ContentView: View {
     func removeItems(at offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)
     }
+    
 }
 
 #Preview {

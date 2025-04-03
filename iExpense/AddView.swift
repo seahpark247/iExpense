@@ -29,7 +29,7 @@ struct AddView: View {
                     }
                 }
                 
-                Section("$") {
+                Section(Locale.current.currency?.identifier ?? "USD") {
                     TextField("Money", value: $amount, format: .number)
                         .keyboardType(.decimalPad)
                 }
