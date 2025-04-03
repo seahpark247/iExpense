@@ -4,8 +4,6 @@
 //
 //  Created by Seah Park on 3/21/25.
 //
-// 돈 저장 고치기
-// ... 코드 틀린데 있나?
 
 import SwiftUI
 

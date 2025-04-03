@@ -29,12 +29,16 @@ struct AddView: View {
                     }
                 }
                 
-                TextField("Amount", value: $amount, format: .currency(code: "USD"))
-                    .keyboardType(.decimalPad)
+                Section("$") {
+                    TextField("Money", value: $amount, format: .number)
+                        .keyboardType(.decimalPad)
+                }
             }
             .navigationTitle("Add new expense")
             .toolbar {
                 Button("Save") {
+                    guard !name.isEmpty && !amount.isZero else { return }
+                    
                     let item = ExpenseItem(name: name, type: type, amount: amount)
                     expenses.items.append(item)
                     dismiss()
