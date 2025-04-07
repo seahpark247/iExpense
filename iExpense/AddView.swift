@@ -11,7 +11,7 @@ struct AddView: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var name = ""
-    @State private var type = "Personal"
+    @State private var type = "Business"
     @State private var amount = 0.0
     
     var expenses: Expenses
@@ -21,7 +21,7 @@ struct AddView: View {
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Name", text: $name)
+                TextField("Name", text: $name).textInputAutocapitalization(.words)
                 
                 Picker("Type", selection: $type) {
                     ForEach(types, id: \.self) {

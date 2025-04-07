@@ -46,11 +46,14 @@ struct valueWarning: ViewModifier {
 
 struct itemsList: View {
     let expenses: Expenses
-    let removeItems: (IndexSet) -> Void
     let type: String
     
+    var filteredItems: [ExpenseItem] {
+        expenses.items.filter { $0.type == type }
+    }
+    
     var body: some View {
-        ForEach(expenses.items.filter {$0.type == type}) { item in
+        ForEach(filteredItems) { item in
             HStack{
                 VStack(alignment: .leading) {
                     Text(item.name).font(.headline)
@@ -64,6 +67,16 @@ struct itemsList: View {
         }
         .onDelete(perform: removeItems)
     }
+    
+    func removeItems(at offsets: IndexSet) {
+        let itemsToDelete = offsets.map { filteredItems[$0] }
+        
+        for item in itemsToDelete {
+            if let indexInOriginal = expenses.items.firstIndex(where: { $0.id == item.id }) {
+                expenses.items.remove(at: indexInOriginal)
+            }
+        }
+    }
 }
 
 extension View {
@@ -74,18 +87,17 @@ extension View {
 
 struct ContentView: View {
     @State private var expenses = Expenses()
-    
     @State private var showingAddExpense = false
     
     var body: some View {
         NavigationStack {
             List {
                 Section("Business") {
-                    itemsList(expenses: expenses, removeItems: removeItems, type: "Business")
+                    itemsList(expenses: expenses, type: "Business")
                 }
                 
                 Section("Personal: Limit $100") {
-                    itemsList(expenses: expenses, removeItems: removeItems, type: "Personal")
+                    itemsList(expenses: expenses, type: "Personal")
                 } // 총 합 리밋 따라서 배경색 바뀌기
                 .listRowBackground(Color.pink.opacity(0.1))
             }
@@ -99,10 +111,6 @@ struct ContentView: View {
                 AddView(expenses: expenses)
             }
         }
-    }
-    
-    func removeItems(at offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
     }
     
 }
