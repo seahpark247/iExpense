@@ -61,9 +61,7 @@ struct itemsList: View {
     var body: some View {
         ForEach(filteredItems) { item in
             HStack {
-                VStack(alignment: .leading) {
-                    Text(item.name).font(.headline)
-                }
+                Text(item.name).font(.headline)
                 
                 Spacer()
                 
