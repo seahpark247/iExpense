@@ -44,6 +44,12 @@ struct valueWarning: ViewModifier {
     }
 }
 
+extension View {
+    func ValueWarningStyle(_ value: Double) -> some View {
+        modifier(valueWarning(value: value))
+    }
+}
+
 struct itemsList: View {
     let expenses: Expenses
     let type: String
@@ -54,7 +60,7 @@ struct itemsList: View {
     
     var body: some View {
         ForEach(filteredItems) { item in
-            HStack{
+            HStack {
                 VStack(alignment: .leading) {
                     Text(item.name).font(.headline)
                 }
@@ -79,12 +85,6 @@ struct itemsList: View {
     }
 }
 
-extension View {
-    func ValueWarningStyle(_ value: Double) -> some View {
-        modifier(iExpense.valueWarning(value: value))
-    }
-}
-
 struct ContentView: View {
     @State private var expenses = Expenses()
     @State private var showingAddExpense = false
@@ -96,9 +96,9 @@ struct ContentView: View {
                     itemsList(expenses: expenses, type: "Business")
                 }
                 
-                Section("Personal: Limit $100") {
+                Section("Personal") {
                     itemsList(expenses: expenses, type: "Personal")
-                } // 총 합 리밋 따라서 배경색 바뀌기
+                }
                 .listRowBackground(Color.pink.opacity(0.1))
             }
             .navigationTitle("iExpense")
