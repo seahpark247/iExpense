@@ -87,6 +87,7 @@ struct itemsList: View {
 struct ContentView: View {
     @State private var expenses = Expenses()
     @State private var showingAddExpense = false
+    @State private var title = "iExpense"
     
     var body: some View {
         NavigationStack {
@@ -100,13 +101,14 @@ struct ContentView: View {
                 }
                 .listRowBackground(Color.pink.opacity(0.1))
             }
-            .navigationTitle("iExpense")
+            .navigationTitle($title)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 Button("Add Expense", systemImage: "plus") {
                     showingAddExpense = true
                 }
             }
-            .sheet(isPresented: $showingAddExpense) {
+            .navigationDestination(isPresented: $showingAddExpense) {
                 AddView(expenses: expenses)
             }
         }
